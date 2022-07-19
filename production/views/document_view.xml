@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Documents-->
+
+    <!-- Document Tree View  -->
+    <record id="document_form" model="ir.ui.view">
+        <field name="name">document</field>
+        <field name="model">equipement.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="titre"/>
+                        <field name="document"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Document Action View  -->
+
+    <record id="document_action" model="ir.actions.act_window">
+        <field name="name">Documents</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">equipement.document</field>
+        <field name="view_mode">form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajouter un document
+            </p>
+        </field>
+    </record>
+
+</odoo>

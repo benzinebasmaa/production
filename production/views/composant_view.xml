@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Composants-->
+
+    <!-- Composant Tree View  -->
+
+    <record id="composant_tree" model="ir.ui.view">
+        <field name="name">Composants</field>
+        <field name="model">equipement.composants</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="composant_number"/>
+                <field name="equipement_id"/>
+                <field name="parent_id"/>
+                <field name="nom"/>
+                <field name="criticality"/>
+                <field name="marque_id"/>
+                <field name="description"/>
+                <field name="outils_ids" widget="many2many_tags">
+                    <tree>
+                        <field name="nom"/>
+                        <field name="Outils_number"/>
+                    </tree>
+                </field>
+            </tree>
+        </field>
+    </record>
+
+    <!--Composant : Recherche-->
+
+    <record id="composant_search_view" model="ir.ui.view">
+        <field name="name">Recherche Composant</field>
+        <field name="model">equipement.composants</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Composant">
+                <field name="parent"/>
+                <field name="equipement_id"/>
+                <field name="nom"/>
+                <field name="criticality"/>
+                <field name="composant_number"/>
+                <field name="marque_id"/>
+                <field name="description"/>
+                <filter string="Composant parent"
+                        name="have_parent"
+                        domain="[('have_parent','=','False')]"
+                />
+                <group expand="1" string="Group By">
+                    <filter string="Equipement" name="equipement_id" context="{'group_by':'equipement_id'}"/>
+                    <filter string="Composants" name="parent_id" context="{'group_by':'parent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--Composant : Form-->
+
+    <record id="composant_form" model="ir.ui.view">
+        <field name="name">composant form</field>
+        <field name="model">equipement.composants</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="preview_child_list"
+                                class="oe_stat_button"
+                                icon="fa-sitemap"
+                                type="object"
+                                string="Sous-composants">
+                        </button>
+                        <field string="Sous-composants" name="child_count" widget="statinfo"/>
+                    </div>
+                    <group>
+                        <field name="have_parent"/>
+                        <field name="parent"/>
+                        <field name="equipement_id"/>
+                        <field name="parent_id"
+                               attrs="{'invisible': [('have_parent', '=', False)]}"
+                        />
+                        <field name="nom" placeholder="Nom Composant -Nom du  composant Parent"/>
+                        <field name="composant_number"/>
+                        <field name="criticality"/>
+                        <field name="marque_id"/>
+                        <field name="outils_ids" widget="many2many_tags"/>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+
+                            <group string="Description">
+                                <field name="description"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Composant : Action-->
+
+    <record id="composant_action" model="ir.actions.act_window">
+        <field name="name">Composants</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">equipement.composants</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajouter un composant
+            </p>
+        </field>
+    </record>
+
+    <!--Composant : menu-->
+    <menuitem id="equipement_composant"
+              name="Composants"
+              parent="menu_equipement"
+              action="composant_action"
+              sequence="100"/>
+</odoo>
