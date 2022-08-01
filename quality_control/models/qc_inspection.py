@@ -1,4 +1,3 @@
-
 from odoo import api, exceptions, fields, models, _
 from odoo.tools import formatLang
 import odoo.addons.decimal_precision as dp
@@ -24,7 +23,7 @@ class QcInspection(models.Model):
         states={'draft': [('readonly', False)]})
 
     product_id = fields.Many2one(
-        comodel_name="product.product", compute="_compute_product_id",
+        comodel_name="product.product",
         store=True, help="Product associated with the inspection",
         oldname='product')
     qty = fields.Float(string="Quantity", default=1.0)
@@ -39,7 +38,7 @@ class QcInspection(models.Model):
         states={'success': [('readonly', True)],
                 'failed': [('readonly', True)]})
     state = fields.Selection(
-        [('draft', 'Draft'),
+        [('draft', 'Test'),
          ('ready', 'Ready'),
          ('waiting', 'Waiting supervisor approval'),
          ('success', 'Quality success'),
@@ -64,6 +63,15 @@ class QcInspection(models.Model):
         comodel_name='res.users', string='Responsible',
         track_visibility='always', default=lambda self: self.env.user)
 
+    category = fields.Many2one(
+        comodel_name='qc.test.category', string='Category')
+
+    team_ids = fields.Many2many('qc.team', string='Teams')
+
+    stock_picking_id = fields.Many2one('stock.picking.type', string='Opération', required=True)
+    picking_ids = fields.Many2many('stock.picking', string='Source Operation',
+                                   domain="[('picking_type_id','=',stock_picking_id)]", )
+    operation_ids = fields.Many2many('mrp.production', string='Source Operation')
 
     @api.model
     def create(self, vals):
@@ -92,10 +100,6 @@ class QcInspection(models.Model):
 
     @api.multi
     def action_todo(self):
-        for inspection in self:
-            if not inspection.test:
-                raise exceptions.UserError(
-                    _("You must first set the test to perform."))
         self.write({'state': 'ready'})
 
     @api.multi
@@ -130,10 +134,10 @@ class QcInspection(models.Model):
         self.write({'state': 'canceled'})
 
 
-
 class QcInspectionLine(models.Model):
     _name = 'qc.inspection.line'
     _description = "Quality control inspection line"
+    _order = 'sequence, id'
 
     @api.depends('question_type', 'uom_id', 'test_uom_id', 'max_value',
                  'min_value', 'quantitative_value', 'qualitative_value',
@@ -166,17 +170,48 @@ class QcInspectionLine(models.Model):
                         in self.env.user.groups_id:
                     l.valid_values += " %s" % l.test_uom_id.name
 
+
+    @api.constrains('ql_values')
+    def _check_valid_answers(self):
+        for tc in self:
+            if (tc.question_type == 'qualitative' and tc.ql_values and
+                    not tc.ql_values.filtered('ok')):
+                raise exceptions.ValidationError(
+                    _("Question '%s' is not valid: "
+                      "you have to mark at least one value as OK.")
+                    % tc.name_get()[0][1])
+
+    @api.constrains('min_value', 'max_value')
+    def _check_valid_range(self):
+        for tc in self:
+            if tc.question_type == 'quantitative' and tc.min_value > tc.max_value:
+                raise exceptions.ValidationError(
+                    _("Question '%s' is not valid: "
+                      "minimum value can't be higher than maximum value.")
+                    % tc.name_get()[0][1])
+
+    trigger_time_ids = fields.Many2many('stock.picking.type', string='Trigger On',required= True)
+
     inspection_id = fields.Many2one(
         comodel_name='qc.inspection', string='Inspection', ondelete='cascade')
-    name = fields.Char(string="Question", readonly=True)
+
+    name = fields.Char(string="Question",required=True)
+
     product_id = fields.Many2one(
-        comodel_name="product.product", related="inspection_id.product_id",
-        store=True,  oldname='product')
-    test_line = fields.Many2one(
-        comodel_name='qc.test.question', string='Test question',
-        readonly=True)
+        comodel_name="product.template",
+        store=True, oldname='product')
+
     possible_ql_values = fields.Many2many(
         comodel_name='qc.test.question.value', string='Answers')
+
+
+    ql_values = fields.One2many(
+        comodel_name='qc.test.question.value', inverse_name="test_line",
+        string='Qualitative values', copy=True)
+
+    sequence = fields.Integer(
+        string='Sequence', required=True, default="10")
+
     quantitative_value = fields.Float(
         'Quantitative value', digits=dp.get_precision('Quality Control'),
         help="Value of the result for a quantitative question.")
@@ -187,10 +222,10 @@ class QcInspectionLine(models.Model):
     notes = fields.Text(string='Notes')
     min_value = fields.Float(
         string='Min', digits=dp.get_precision('Quality Control'),
-        readonly=True, help="Minimum valid value for a quantitative question.")
+         help="Minimum valid value for a quantitative question.")
     max_value = fields.Float(
         string='Max', digits=dp.get_precision('Quality Control'),
-        readonly=True, help="Maximum valid value for a quantitative question.")
+         help="Maximum valid value for a quantitative question.")
     test_uom_id = fields.Many2one(
         comodel_name='product.uom', string='Test UoM', readonly=True,
         help="UoM for minimum and maximum values for a quantitative "
@@ -200,12 +235,11 @@ class QcInspectionLine(models.Model):
         store=True)
     uom_id = fields.Many2one(
         comodel_name='product.uom', string='UoM',
-        domain="[('category_id', '=', test_uom_category)]",
         help="UoM of the inspection value for a quantitative question.")
     question_type = fields.Selection(
         [('qualitative', 'Qualitative'),
          ('quantitative', 'Quantitative')],
-        string='Question type', readonly=True)
+        string='Question type',required=True)
     valid_values = fields.Char(string="Valid values", store=True,
                                compute="_compute_valid_values")
     success = fields.Boolean(

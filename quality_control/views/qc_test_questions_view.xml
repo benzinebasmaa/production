@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="qc_inspection_line_form_view">
+        <field name="name">qc.inspection.line.form</field>
+        <field name="model">qc.inspection.line</field>
+        <field name="arch" type="xml">
+            <form string="Test question">
+                <label for="name" class="oe_edit_only"/>
+                <h1>
+                    <field name="name" class="oe_inline"/>
+                </h1>
+                <group>
+                    <field name="sequence"/>
+                    <field name="trigger_time_ids" widget="many2many_tags"/>
+                    <field name="question_type"/>
+                </group>
+                <group name="qualitative"
+                       string="Answers"
+                       colspan="4"
+                       attrs="{'invisible': [('question_type', '!=', 'qualitative')]}">
+                    <field name="ql_values"
+                           nolabel="1"
+                           attrs="{'required': [('question_type','=','qualitative')]}">
+                        <tree string="Question value" editable="bottom">
+                            <field name="name"/>
+                            <field name="ok"/>
+                        </tree>
+                    </field>
+                </group>
+                <div name="quantitative"
+                     align="center"
+                     attrs="{'invisible': [('question_type', '!=', 'quantitative')]}">
+                    <h1 name="quantitative-data">
+                        <span name="quantitative-interval">
+                            <field name="min_value"
+                                   class="oe_inline"
+                                   nolabel="1"
+                                   attrs="{'required': [('question_type','=', 'quantitative')]}"/>
+                            <span>-</span>
+                            <field name="max_value"
+                                   class="oe_inline"
+                                   nolabel="1"
+                                   attrs="{'required': [('question_type', '=', 'quantitative')]}"/>
+                        </span>
+                        <span name="quantitative-uom">
+                            <field name="uom_id"
+                                   class="oe_inline"
+                                   nolabel="1"
+                                   attrs="{'required': [('question_type', '=', 'quantitative')]}"/>
+                        </span>
+                    </h1>
+                </div>
+                <field name="notes"/>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>

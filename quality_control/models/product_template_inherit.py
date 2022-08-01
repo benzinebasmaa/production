@@ -1,5 +1,3 @@
-
-
 from odoo import fields, models
 
 
@@ -8,5 +6,5 @@ class ProductTemplate(models.Model):
 
 
     test_lines_ids = fields.One2many(
-        comodel_name='qc.test.question', inverse_name='product_id',
+        comodel_name='qc.inspection.line', inverse_name='product_id',
         string='Questions', copy=True)

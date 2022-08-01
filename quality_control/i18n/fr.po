@@ -172,7 +172,7 @@ msgstr "Nom à afficher"
 #: model:ir.ui.view,arch_db:quality_control.qc_inspection_form_view
 #: selection:qc.inspection,state:0
 msgid "Draft"
-msgstr "Brouillon"
+msgstr "Test"
 
 #. module: quality_control
 #: code:addons/quality_control/models/qc_test_category.py:36
