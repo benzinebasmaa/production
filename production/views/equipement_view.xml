@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Top menu Equipement-->
+        <menuitem name="Equipement"
+                  id="base.menu_root"
+                  sequence="80"/>
+
+        <!-- Configuration menu -->
+        <menuitem name="Configuration"
+                  id="menu_equipement_config"
+                  parent="base.menu_root"
+                  sequence="200"/>
+
+        <!-- Equipement menu -->
+        <menuitem name="Equipement"
+                  id="menu_equipement"
+                  parent="base.menu_root"
+                  sequence="9"/>
+
+
+        <!--Catégorie d'équipement-->
+
+        <!-- Catégorie d'équipement : Tree View -->
+        <record id="equipement_category_tree_view" model="ir.ui.view">
+            <field name="name">equipement.category.tree</field>
+            <field name="model">equipement.categorie</field>
+            <field name="arch" type="xml">
+                <tree string="Categorie d'equipement" editable="top">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Catégorie d'équipement : Action  -->
+
+        <record id="action_equipement_category" model="ir.actions.act_window">
+            <field name="name">Categirie d'equipement</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">equipement.categorie</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <!-- Catégorie d'équipement : menu -->
+        <menuitem name="Catégorie d'équipement"
+                  action="action_equipement_category"
+                  id="menu_equipement_category"
+                  parent="menu_equipement_config"
+                  sequence="100"/>
+
+        <!--Equipement-->
+
+        <!-- Equipement Tree View  -->
+        <record id="equipement_tree_view" model="ir.ui.view">
+            <field name="name">equipement.equipement.tree</field>
+            <field name="model">equipement.equipement</field>
+            <field name="arch" type="xml">
+                <tree string="Equipement">
+                    <field name="asset_number"/>
+                    <field name="name"/>
+                    <field name="criticality"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Equipement Form View  -->
+        <record id="equipement_form_view" model="ir.ui.view">
+            <field name="name">equipement.equipement.form</field>
+            <field name="model">equipement.equipement</field>
+            <field name="arch" type="xml">
+                <form string="Equipement">
+                    <header>
+                        <button name="generate_qr" type="object" string="Genérer le code Qr" class="btn btn-primary"/>
+                        <button name="action_scrap" type="object" string="Mise au rebut" class="btn btn-primary"/>
+                        <field name="maintenance_state" widget="statusbar"
+                               statusbar_visible="fonctionnel,enpanne,maintenance,miseaurebut"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="buttons">
+                        </div>
+                        <field name="image_medium" widget="image" class="oe_avatar oe_left"/>
+                        <div class="oe_title">
+
+                            <h2>
+                                <field name="name" placeholder="Nom de l'équipement"/>
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+
+                                <field name="asset_number"/>
+                                <field name="serial"/>
+                                <field name="investissement_number"/>
+                                <field name="model"/>
+                                <field name="marque_id"/>
+                                <field name="category_ids" widget="many2many_tags" placeholder="Catégorire..."/>
+
+                            </group>
+                            <group>
+                                <field name="qr_code" widget="image" class="oe_avatar"/>
+                                <field name="criticality"/>
+                                <field name="user_id"/>
+                                <field name="location_id"/>
+                            </group>
+                            <group>
+                                <field name="employee_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="info" string="Achats &amp; Garantie">
+
+                                <group string="Achats">
+
+                                    <group>
+                                        <field name="manufacturer"/>
+                                        <field name="Construction_date"/>
+                                        <field name="vendor"/>
+                                        <field name="purchase_date"/>
+                                        <field name="purchase_price"/>
+                                    </group>
+
+                                    <group>
+                                        <field name="Facture_number"/>
+                                        <field name="facture_date"/>
+                                        <field name="start_date"/>
+                                    </group>
+
+                                </group>
+                                <group string="Garantie">
+                                    <group>
+                                        <field name="warranty_start_date"/>
+                                        <field name="warranty_end_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="composant" string="Composants">
+                                <field name="composant_ids">
+                                    <tree create="false" delete="false">
+                                        <field name="composant_number"/>
+                                        <field name="nom"/>
+                                        <field name="criticality"/>
+                                        <field name="marque_id"/>
+                                        <field name="outils_ids" widget="many2many_tags"/>
+                                        <field name="description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="donnée technique" string="Donnée Technique">
+
+                                <group string="Donnée Technique">
+                                    <field name="alimentation"/>
+                                    <field name="puissance_maximale"/>
+                                    <field name="capacité"/>
+                                    <field name="vitesse"/>
+                                    <field name="poids"/>
+                                    <field name="dimention" placeholder=" H x l x L "/>
+                                    <field name="bruit" widget="radio"/>
+                                    <field name="fréquence" placeholder=" h/jour "/>
+                                </group>
+                                <group string="Détails Importants">
+                                    <field name="detail"/>
+                                </group>
+                            </page>
+                            <page name="documentation" string="Documentation">
+
+                                <group>
+                                    <field name="document_ids">
+                                        <tree>
+                                            <field name="titre"/>
+                                            <field name="document" widget="binary"/>
+                                            <field name="description"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page name="description" string="Description">
+
+                                <group string="Déscription">
+                                    <field name="designation"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Equipement Kanban -->
+        <record id="equipement_kanban_view" model="ir.ui.view">
+            <field name="name">Equipement Kanban</field>
+            <field name="model">equipement.equipement</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="maintenance_state"/>
+                    <field name="user_id"/>
+                    <field name="criticality"/>
+                    <field name="asset_number"/>
+                    <field name="id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_vignette">
+                                <div class="col-2">
+                                    <a type="open">
+                                        <img t-att-src="kanban_image('equipement.equipement', 'image_medium', record.id.raw_value)"
+                                             t-att-title="record.id.value" t-att-alt="record.id.value"
+                                             height="90" style="max-width: 100;" alt="Image de l'équipement"/>
+                                    </a>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <div class="o_kanban_tags_section"/>
+                                    <ul>
+                                        <li>Modèle:
+                                            <field name="model"></field>
+                                        </li>
+                                        <li>N° Equipement:
+                                            <field name="asset_number"></field>
+                                        </li>
+                                        <li>N° série:
+                                            <field name="serial"></field>
+                                        </li>
+                                        <li class="codup_kanban_info">
+                                            <a t-if="record.criticality.raw_value == 0"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_off">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value gt 0"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_on">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value lte 1"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_off">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value gt 1"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_on">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value lte 2"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_off">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value gt 2"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_on">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <!--Equipement Action -->
+        <record id="equipement_equipement_action" model="ir.actions.act_window">
+            <field name="name">Equipements</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">equipement.equipement</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Ajouter un équipement
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="equipement_search">
+            <field name="name">Recherche Equipement</field>
+            <field name="model">equipement.equipement</field>
+            <field name="arch" type="xml">
+                <search string="equipement Search">
+
+                    <field name="user_id"/>
+                    <field name="location_id"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_user"
+                                string="Responsable"
+                                context="{'group_by': 'user_id'}"
+                        />
+                        <filter name="group_category"
+                                string="Localisation"
+                                context="{'group_by': 'location_id'}"
+                        />
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Equipement menu -->
+        <menuitem name="Equipement"
+                  id="menu_equipement_equipement"
+                  parent="menu_equipement"
+                  action="equipement_equipement_action"
+                  sequence="9"/>
+
+
+        <!--Etat de l'équipement -->
+
+        <!--         Gérer les états  Kanban View  -->
+        <record model="ir.ui.view" id="management_equipement_kanban_view">
+            <field name="name">Etat des équipements</field>
+            <field name="model">equipement.equipement</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="maintenance_state" create="false" delete="false">
+                    <field name="maintenance_state"/>
+                    <field name="user_id"/>
+                    <field name="criticality"/>
+                    <field name="id"/>
+                    <field name="asset_number"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_vignette">
+                                <div class="col-2">
+                                    <a type="open">
+                                        <img t-att-src="kanban_image('equipement.equipement', 'image_medium', record.id.raw_value)"
+                                             t-att-title="record.id.value" t-att-alt="record.id.value"
+                                             height="90" style="max-width: 100;" alt="Image de l'équipement"/>
+                                    </a>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <h4>
+                                        <a type="open">
+                                            <field name="name"/>
+                                        </a>
+                                    </h4>
+                                    <ul>
+                                        <li>Modèle:
+                                            <field name="model"></field>
+                                        </li>
+                                        <li>N° Equipement:
+                                            <field name="asset_number"></field>
+                                        </li>
+                                        <li>N° série:
+                                            <field name="serial"></field>
+                                        </li>
+                                        <li class="codup_kanban_info">
+                                            <a t-if="record.criticality.raw_value == 0"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_off">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value gt 0"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_on">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value lte 1"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_off">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value gt 1"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_on">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value lte 2"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_off">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                            <a t-if="record.criticality.raw_value gt 2"
+                                               t-attf-title="#{record.criticality.value}" class="codup_attention_on">
+                                                <span class="fa fa-exclamation-triangle"/>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Etats des  equipements Action -->
+
+        <record id="action_management_equipement_state" model="ir.actions.act_window">
+            <field name="name">Etat des équipements</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">equipement.equipement</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" eval="False"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_management_equipement_kanban_view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="management_equipement_kanban_view"/>
+            <field name="act_window_id" ref="action_management_equipement_state"/>
+        </record>
+
+        <!-- Etats des  equipements Menu -->
+        <menuitem name="Etat des équipement"
+                  action="action_management_equipement_state"
+                  id="menu_etat_equipement_management"
+                  parent="menu_equipement"
+                  sequence="100"/>
+
+    </data>
+</openerp>

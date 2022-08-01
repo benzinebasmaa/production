@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Sequences for Equipement -->
+        <record id="seq_asset_order" model="ir.sequence">
+            <field name="name">N° équipement</field>
+            <field name="code">equipement.equipement.sequence</field>
+            <field name="prefix">EQ/</field>
+            <field name="suffix">/%(year)s</field>
+            <field name="padding">4</field>
+        </record>
+
+        <!-- Sequences for Outils -->
+        <record id="seq_outils_order" model="ir.sequence">
+            <field name="name">N° Outils</field>
+            <field name="code">equipement.outils.sequence</field>
+            <field name="prefix">OU/</field>
+            <field name="suffix">/%(year)s</field>
+            <field name="padding">4</field>
+        </record>
+
+        <!-- Sequences for Composants -->
+        <record id="seq_composant_order" model="ir.sequence">
+            <field name="name">N°Composant</field>
+            <field name="code">equipement.composants.sequence</field>
+            <field name="prefix">Composant/</field>
+            <field name="padding">4</field>
+        </record>
+
+
+    </data>
+</odoo>

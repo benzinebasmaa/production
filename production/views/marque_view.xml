@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Marque-->
+
+    <!-- Marque Tree View  -->
+
+    <record id="equipement_marque_tree_view" model="ir.ui.view">
+        <field name="name">Marque d'équipement</field>
+        <field name="model">equipement.marque</field>
+        <field name="arch" type="xml">
+            <tree string=" marque d'equipement" editable="top">
+                <field name="nom"/>
+            </tree>
+        </field>
+    </record>
+
+      <!-- Marque action View  -->
+
+    <record id="marque_action" model="ir.actions.act_window">
+        <field name="name">Marque</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">equipement.marque</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajouter une marque
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="equipement_marque"
+              name="Marque des équipements"
+              parent="menu_equipement_config"
+              action="marque_action"
+              sequence="101"/>
+
+
+</odoo>
