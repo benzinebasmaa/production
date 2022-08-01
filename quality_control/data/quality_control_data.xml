@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="seq_qc_inspection" model="ir.sequence">
+            <field name="name">Quality inspection</field>
+            <field name="code">qc.inspection</field>
+            <field name="prefix">QC-</field>
+            <field name="padding">6</field>
+        </record>
+    </data>
+</odoo>
