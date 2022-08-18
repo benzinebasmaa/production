@@ -51,23 +51,25 @@
                                    widget="many2many_tags"/>
                             <field name="operation_ids" attrs="{'invisible': [('stock_picking_id', '!=',16)]}"
                                    widget="many2many_tags"/>
-                            <field name="product_id"/>
+                            <field name="product_ids" widget="many2many_tags" can_create="false"/>
                         </group>
                         <group>
                             <field name="date"/>
                             <field name="user"/>
                             <field name="team_ids" widget="many2many_tags"/>
-                            <field name="success"/>
-                            <field name="auto_generated"/>
+                            <field name="success" invisible="1"/>
+                            <field name="auto_generated" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Questions">
                             <field name="inspection_lines" nolabel="1">
                                 <tree string="Inspection lines" editable="top" delete="false" create="false">
-                                    <field name="name"/>
-                                    <field name="question_type"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="question_type" readonly="1"/>
                                     <field name="possible_ql_values" invisible="1"/>
+                                    <field name="ql_values" invisible="1"/>
                                     <field name="qualitative_value"
                                            attrs="{'readonly': [('question_type', '=', 'quantitative')]}"/>
                                     <field name="quantitative_value"
@@ -78,8 +80,8 @@
                                     <field name="test_uom_category" invisible="1"/>
                                     <field name="min_value" invisible="1"/>
                                     <field name="max_value" invisible="1"/>
-                                    <field name="valid_values"/>
-                                    <field name="success"/>
+                                    <field name="valid_values" readonly="1"/>
+                                    <field name="success" readonly="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -109,9 +111,10 @@
         <field name="arch" type="xml">
             <tree string="Inspections">
                 <field name="name"/>
+                <field name="category"/>
+                <field name="stock_picking_id"/>
                 <field name="user"/>
-                <field name="qty"/>
-                <field name="product_id"/>
+                <field name="team_ids"/>
                 <field name="success"/>
                 <field name="state"/>
             </tree>
@@ -126,7 +129,6 @@
                 <group>
                     <field name="name"/>
                     <field name="user"/>
-                    <field name="product_id"/>
                 </group>
                 <newline/>
                 <filter string="Correct"
@@ -138,9 +140,6 @@
                     <filter string="Responsible"
                             domain="[]"
                             context="{'group_by': 'user'}"/>
-                    <filter string="Product"
-                            domain="[]"
-                            context="{'group_by': 'product_id'}"/>
                     <filter string="State"
                             domain="[]"
                             context="{'group_by': 'state'}"/>
@@ -167,76 +166,6 @@
               id="qc_inspection_menu"
               action="action_qc_inspection"/>
 
-    <record model="ir.ui.view" id="qc_inspection_line_tree_view">
-        <field name="name">qc.inspection.line.tree</field>
-        <field name="model">qc.inspection.line</field>
-        <field name="arch" type="xml">
-            <tree string="Inspection lines" delete="false" create="false" colors="red: success==False">
-                <field name="inspection_id"/>
-                <field name="product_id"/>
-                <field name="name"/>
-                <field name="question_type"/>
-                <field name="possible_ql_values" invisible="1"/>
-                <field name="qualitative_value"
-                       attrs="{'readonly': [('question_type', '=', 'quantitative')]}"/>
-                <field name="quantitative_value"
-                       attrs="{'readonly': [('question_type', '=', 'qualitative')]}"/>
-                <field name="uom_id"
-                       groups="product.group_uom"
-                       attrs="{'readonly': [('question_type', '=', 'qualitative')]}"/>
-                <field name="test_uom_category" invisible="1"/>
-                <field name="valid_values"/>
-                <field name="success"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="qc_inspection_line_search_view">
-        <field name="name">qc.inspection.line.search</field>
-        <field name="model">qc.inspection.line</field>
-        <field name="arch" type="xml">
-            <search string="Search inspection line">
-                <group>
-                    <field name="name"/>
-                    <field name="inspection_id"/>
-                    <field name="product_id"/>
-                    <field name="success"/>
-                </group>
-                <newline/>
-                <filter string="Correct"
-                        domain="[('success', '=', True)]"/>
-                <filter string="Incorrect"
-                        domain="[('success', '=', False)]"/>
-                <newline/>
-                <group expand="0" string="Group by...">
-                    <filter string="Inspection"
-                            domain="[]"
-                            context="{'group_by': 'inspection_id'}"/>
-                    <filter string="Product"
-                            domain="[]"
-                            context="{'group_by': 'product_id'}"/>
-                    <filter string="Question"
-                            domain="[]"
-                            context="{'group_by': 'name'}"/>
-                    <filter string="Success"
-                            domain="[]"
-                            context="{'group_by': 'success'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="action_qc_inspection_line">
-        <field name="name">Inspection lines</field>
-        <field name="res_model">qc.inspection.line</field>
-        <!--        <field name="view_type">form</field>-->
-        <field name="view_mode">tree</field>
-    </record>
-
-    <menuitem name="Inspection lines"
-              parent="qc_inspection_menu_parent"
-              id="qc_inspection_lines_menu"
-              action="action_qc_inspection_line"/>
 
 </odoo>
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record model="ir.ui.view" id="product_product_qc_form_view">
+        <field name="name">product.product.qc</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <page name="inventory" position="before">
+                <page name="quality_control" string="Questions control">
+                    <group name="qc">
+                        <field name="test_lines_ids" nolabel="1">
+                            <tree string="Questions">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="question_type"/>
+                                <field name="min_value"/>
+                                <field name="max_value"/>
+                                <field name="uom_id"/>
+                                <field name="ql_values"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>
