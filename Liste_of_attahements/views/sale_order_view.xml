@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="attachements_documrnts_sale" model="ir.ui.view">
+        <field name="name">attachements.documrnts.sale.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object"
+                        name="attachement_document_action"
+                        class="oe_stat_button"
+                        icon="fa-check-circle-o">
+                    <field name="attachements_count" widget="statinfo" string="Attachements"/>
+                </button>
+
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ir_attachment_sale_order" model="ir.ui.view">
+        <field name="name">ir.attachment.sale.order</field>
+        <field name="model">ir.attachment</field>
+        <field name="arch" type="xml">
+            <tree string="Attachments" delete="false" create="false">
+                    <field name="name"/>
+                    <field name="datas_fname"/>
+                    <field name="res_model"/>
+                    <field name="create_uid"/>
+                    <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+
+</odoo>
